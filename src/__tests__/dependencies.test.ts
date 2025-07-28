@@ -7,26 +7,32 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import fs from 'fs'
+import path from 'path'
 
 describe('Dependency Import Validation', () => {
   describe('Core Dependencies', () => {
     test('should have @supabase/supabase-js available in package.json', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.dependencies['@supabase/supabase-js']).toBeDefined()
     })
 
     test('should have zustand available in package.json', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.dependencies['zustand']).toBeDefined()
     })
 
     test('should have lucide-react available in package.json', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.dependencies['lucide-react']).toBeDefined()
     })
 
     test('should have recharts available in package.json', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.dependencies['recharts']).toBeDefined()
     })
   })
@@ -64,32 +70,38 @@ describe('Dependency Import Validation', () => {
 
   describe('Development Dependencies', () => {
     test('should have @types/node in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['@types/node']).toBeDefined()
     })
 
     test('should have @types/react in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['@types/react']).toBeDefined()
     })
 
     test('should have @types/react-dom in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['@types/react-dom']).toBeDefined()
     })
 
     test('should have jest in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['jest']).toBeDefined()
     })
 
     test('should have @testing-library/react in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['@testing-library/react']).toBeDefined()
     })
 
     test('should have @testing-library/jest-dom in devDependencies', () => {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(process.cwd(), 'package.json')
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.devDependencies['@testing-library/jest-dom']).toBeDefined()
     })
   })
@@ -108,7 +120,8 @@ describe('Build and Compilation Validation', () => {
   })
 
   test('should have proper test scripts configured', () => {
-    const packageJson = require('../../package.json')
+    const packageJsonPath = path.join(process.cwd(), 'package.json')
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
     expect(packageJson.scripts.test).toBeDefined()
     expect(packageJson.scripts['test:watch']).toBeDefined()
     expect(packageJson.scripts['test:coverage']).toBeDefined()
