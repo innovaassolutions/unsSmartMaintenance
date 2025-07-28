@@ -14,12 +14,12 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 1.4 Configure TypeScript with strict mode and path mapping
   - [x] 1.5 Verify all TypeScript configuration tests pass
 
-- [ ] 2. Install and Configure Core Dependencies
-  - [ ] 2.1 Write tests for dependency import validation
+- [x] 2. Install and Configure Core Dependencies
+  - [x] 2.1 Write tests for dependency import validation
   - [x] 2.2 Install essential packages (mqtt, @supabase/supabase-js, zustand)
   - [x] 2.3 Install UI and visualization packages (recharts, lucide-react, clsx)
-  - [ ] 2.4 Add development dependencies (@types/node, testing libraries)
-  - [ ] 2.5 Verify all installed packages import without errors
+  - [x] 2.4 Add development dependencies (@types/node, testing libraries)
+  - [x] 2.5 Verify all installed packages import without errors
 
 - [ ] 3. Setup TailwindCSS and shadcn/ui Components
   - [ ] 3.1 Write tests for TailwindCSS class generation
