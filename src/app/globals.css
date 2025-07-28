@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @layer base {
   :root {
@@ -75,23 +75,31 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 
 /* Industrial theme utility classes */
 @layer utilities {
   .industrial-gradient {
-    background: linear-gradient(135deg, hsl(var(--industrial-primary)) 0%, hsl(var(--industrial-secondary)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--industrial-primary)) 0%,
+      hsl(var(--industrial-secondary)) 100%
+    );
   }
-  
+
   .industrial-shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   .industrial-border {
     border-color: hsl(var(--industrial-border));
   }

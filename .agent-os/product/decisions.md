@@ -42,6 +42,7 @@ Selected Next.js with Supabase and EMQX Cloud to leverage modern web technologie
 ### Consequences
 
 **Positive:**
+
 - Modern, scalable architecture that can handle heterogeneous equipment
 - Real-time capabilities demonstrate immediate value to users
 - Role-based dashboards show clear ROI for different stakeholders
@@ -49,6 +50,7 @@ Selected Next.js with Supabase and EMQX Cloud to leverage modern web technologie
 - Predictive analytics showcase advanced Industry 4.0 capabilities
 
 **Negative:**
+
 - Complexity of integrating multiple technologies (MQTT, ML, real-time web)
 - Need for specialized knowledge in both industrial and web technologies
 - Simulated data may not capture all real-world industrial scenarios

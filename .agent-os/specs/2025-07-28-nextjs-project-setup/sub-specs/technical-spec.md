@@ -18,10 +18,12 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ## Approach Options
 
 **Option A:** Manual project setup with individual dependency installation
+
 - Pros: Full control over configuration, understanding of each component
 - Cons: Time-consuming, potential for configuration errors, version conflicts
 
 **Option B:** Next.js create-next-app with TypeScript template (Selected)
+
 - Pros: Official template, optimized configuration, faster setup, proven reliability
 - Cons: May include unnecessary dependencies, less educational value
 
@@ -65,22 +67,26 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ## Configuration Files
 
 ### TypeScript Configuration
+
 - Strict mode enabled for enhanced type checking
 - Path mapping for clean imports (@/components, @/lib, etc.)
 - Module resolution optimized for Next.js App Router
 
 ### ESLint Configuration
+
 - Next.js recommended rules
 - TypeScript-specific linting rules
 - Import order enforcement
 - Accessibility rule enforcement
 
 ### TailwindCSS Configuration
+
 - Content paths for component scanning
 - Custom color palette for industrial themes
 - Plugin integration for typography and forms
 
 ### Environment Variables
+
 - Development environment defaults
 - Production environment templates
 - Supabase and MQTT configuration placeholders

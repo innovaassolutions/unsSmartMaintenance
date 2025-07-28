@@ -17,24 +17,28 @@ UNS Demo System is a Unified Namespace demonstration platform that helps factory
 ### User Personas
 
 **Factory Manager** (35-55 years old)
+
 - **Role:** Operations Director
 - **Context:** Oversees daily production activities across multiple CNC machines
 - **Pain Points:** Lack of real-time visibility into machine performance, reactive maintenance approach
 - **Goals:** Minimize downtime, optimize production efficiency, reduce maintenance costs
 
 **Production Manager** (30-50 years old)
+
 - **Role:** Production Supervisor
 - **Context:** Manages day-to-day manufacturing operations and scheduling
 - **Pain Points:** Difficulty predicting equipment failures, inefficient maintenance scheduling
 - **Goals:** Maintain production targets, prevent unexpected breakdowns
 
 **C-suite Management** (45-65 years old)
+
 - **Role:** Chief Operations Officer / Chief Technology Officer
 - **Context:** Strategic decision-making for operational excellence
 - **Pain Points:** Limited operational insights for strategic planning, high maintenance costs
 - **Goals:** Achieve operational excellence, demonstrate ROI of digital transformation
 
 **Maintenance Technician** (25-45 years old)
+
 - **Role:** Equipment Maintenance Specialist
 - **Context:** Responsible for preventive and corrective maintenance activities
 - **Pain Points:** Reactive maintenance approach, limited predictive insights

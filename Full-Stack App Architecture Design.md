@@ -1,18 +1,22 @@
 # Unified Namespace (UNS) Demo Build Specification
+
 ## CNC Machine Preventative & Prescriptive Maintenance System
 
 ## Maintenance Strategy Definitions
 
 ### Preventive Maintenance
+
 **Preventive Maintenance** is a proactive maintenance strategy that involves regularly scheduled inspections, servicing, and repairs performed on equipment before failures occur. The goal is to prevent unexpected breakdowns and extend equipment lifespan through systematic maintenance activities.
 
 **Key Characteristics:**
+
 - **Time-based**: Scheduled at predetermined intervals (calendar time, operating hours, cycles)
 - **Condition-based**: Triggered by sensor thresholds or performance indicators
 - **Predictable**: Uses historical data and manufacturer recommendations
 - **Cost-effective**: Reduces emergency repairs and unplanned downtime
 
 **Preventive Maintenance Activities in CNC Machines:**
+
 - Lubrication of moving parts on scheduled intervals
 - Tool replacement based on operating hours or part counts
 - Calibration of sensors and measurement systems
@@ -21,15 +25,18 @@
 - Spindle maintenance and balancing
 
 ### Prescriptive Maintenance
+
 **Prescriptive Maintenance** represents the next evolution of maintenance strategy, using advanced analytics, machine learning, and AI to not only predict when maintenance should occur, but also prescribe the optimal maintenance actions to take.
 
 **Key Characteristics:**
+
 - **AI-driven**: Uses machine learning algorithms to analyze complex data patterns
 - **Action-oriented**: Provides specific recommendations for maintenance actions
 - **Optimized**: Considers multiple factors including cost, risk, and operational impact
 - **Continuous**: Adapts recommendations based on real-time data and outcomes
 
 **Prescriptive Maintenance Capabilities:**
+
 - **Failure Prediction**: ML models predict specific failure modes and timeframes
 - **Action Recommendations**: AI suggests optimal maintenance actions with cost-benefit analysis
 - **Resource Optimization**: Recommends optimal timing considering production schedules
@@ -37,6 +44,7 @@
 - **Decision Support**: Provides maintenance priority scoring and resource allocation
 
 **Example Prescriptive Recommendations:**
+
 - "Replace spindle bearing in CNC-003 within 72 hours to prevent catastrophic failure (85% confidence)"
 - "Adjust coolant flow rate to 15.2 L/min to extend tool life by 15% and reduce thermal stress"
 - "Schedule tool change during planned downtime window to optimize production efficiency"
@@ -48,6 +56,7 @@
 **Objective**: Build a Unified Namespace demonstration system for 10 CNC machines using simulated data to showcase preventative and prescriptive maintenance capabilities.
 
 **Goals**:
+
 - Demonstrate real-time data collection and normalization across heterogeneous CNC machines
 - Implement predictive analytics for equipment failure prevention
 - Showcase prescriptive maintenance recommendations
@@ -128,13 +137,15 @@
 
 #### 2.2 Technology Stack Architecture
 
-**Frontend Framework**: 
+**Frontend Framework**:
+
 - **Next.js 15.x**: React-based full-stack framework with App Router
 - **React 18+**: Component library with server/client components
 - **TypeScript**: Type-safe development throughout the stack
 - **Zustand**: Lightweight state management for complex real-time state
 
 **Database & Backend**:
+
 - **Supabase**: PostgreSQL database with real-time features
 - **Prisma**: Type-safe ORM for database operations
 - **Supabase Auth**: Built-in authentication and authorization
@@ -142,22 +153,26 @@
 - **Row Level Security (RLS)**: Multi-tenant data isolation
 
 **API Layer**:
+
 - **Apollo Client**: GraphQL client for frontend data fetching
 - **Supabase GraphQL**: Auto-generated GraphQL API from database schema
 - **Next.js API Routes**: Custom business logic and integrations
 
 **Styling & UI**:
-- **TailwindCSS 3.x**: Utility-first CSS framework for industrial dashboards  
+
+- **TailwindCSS 3.x**: Utility-first CSS framework for industrial dashboards
 - **shadcn/ui**: Modern React component library built on Radix UI
 - **Lucide React**: Clean, consistent iconography for manufacturing interfaces
 - **Next.js Font Optimization**: Performance-optimized Google Fonts loading
 
 **Data Visualization**:
+
 - **Recharts**: Industrial-grade charts for metrics and trends
 - **ReactFlow**: Network topology visualization for UNS hierarchy
 - **Real-time Charts**: Live updating dashboards with WebSocket integration
 
 **MQTT & Real-time Communication**:
+
 - **EMQX Cloud**: Managed MQTT broker for true MQTT protocol support
 - **Upstash Redis**: Data bridge for MQTT-to-web integration and caching
 - **MQTT.js**: JavaScript MQTT client with WebSocket support for browsers
@@ -165,6 +180,7 @@
 - **EMQX-Upstash Integration**: Automatic data flow from MQTT to Redis to web app
 
 **Development & Deployment**:
+
 - **Vercel**: Optimized hosting for Next.js applications with GitHub integration
 - **Supabase Cloud**: Managed database and backend services
 - **EMQX Cloud**: Managed MQTT broker infrastructure
@@ -190,12 +206,14 @@ The UNS implementation will utilize four distinct namespace types, each serving 
 4. **Ad Hoc Namespace**: Supports dynamic, temporary data structures for specialized use cases
 
 **Namespace Design Principles:**
+
 - Each namespace type serves distinct data consumers and use cases
 - Functional namespaces process raw edge data into meaningful business metrics
 - Informative namespaces enable consistent visualization across multiple applications
 - All namespaces maintain semantic hierarchy alignment with physical plant structure
 
 **Enterprise Hierarchy Structure:**
+
 ```
 UNSDemo/
 ├── Site_PlantA/
@@ -287,13 +305,15 @@ UNSDemo/
 ```
 
 **Topic Naming Convention:**
+
 - **Enterprise/Site/Area/Line/Cell/Asset/Category/Subcategory/DataPoint**
 - Each level provides semantic context
 - Forward slashes (/) separate hierarchy levels
-- Underscores (_) separate words within a level
+- Underscores (\_) separate words within a level
 - CamelCase for multi-word data points
 
 **Key UNS Principles Implemented:**
+
 1. **Hierarchical Organization**: Mirrors physical plant structure
 2. **Semantic Context**: Each level adds meaning and context
 3. **Contextual Data Access**: Applications can subscribe at any level
@@ -303,6 +323,7 @@ UNSDemo/
 #### 3.2 Advanced Namespace Implementation
 
 **Edge/Raw Namespace Structure:**
+
 ```
 UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Edge/
 ├── TagData/
@@ -321,6 +342,7 @@ UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Edge/
 ```
 
 **Functional Namespace Structure:**
+
 ```
 UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Functions/
 ├── OEE/
@@ -344,6 +366,7 @@ UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Functions/
 ```
 
 **Informative Namespace Structure:**
+
 ```
 UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Dashboard/
 ├── KPIs/
@@ -364,6 +387,7 @@ UNSDemo/Site_PlantA/Area_Production/Line_01/Cell_Machining/CNC_001/Dashboard/
 #### 3.3 Database Schema (Prisma Models)
 
 **Core Asset Management:**
+
 ```prisma
 model Machine {
   id          String   @id @default(cuid())
@@ -377,13 +401,13 @@ model Machine {
   status      MachineStatus @default(OFFLINE)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relations
   sensorData      SensorReading[]
   maintenanceRecords MaintenanceRecord[]
   alerts          Alert[]
   performances    Performance[]
-  
+
   @@map("machines")
 }
 
@@ -395,10 +419,10 @@ model SensorReading {
   unit      String
   timestamp DateTime @default(now())
   quality   Float?   @default(1.0)
-  
+
   // Relations
   machine   Machine  @relation(fields: [machineId], references: [id])
-  
+
   @@map("sensor_readings")
   @@index([machineId, timestamp])
   @@index([sensorType, timestamp])
@@ -414,10 +438,10 @@ model MaintenanceRecord {
   technician  String?
   cost        Float?
   status      MaintenanceStatus @default(SCHEDULED)
-  
+
   // Relations
   machine     Machine  @relation(fields: [machineId], references: [id])
-  
+
   @@map("maintenance_records")
 }
 
@@ -454,6 +478,7 @@ enum MaintenanceStatus {
 #### 3.4 Machine Types & Variations
 
 **CNC Machine Profiles**:
+
 1. **Vertical Machining Centers** (CNC-001, CNC-002, CNC-003)
    - 3-axis machines
    - Higher spindle speeds (up to 10,000 RPM)
@@ -483,6 +508,7 @@ enum MaintenanceStatus {
 Based on KMS best practices, the UNS will implement comprehensive data modeling to ensure semantic interoperability and efficient data flow:
 
 **Data Model Requirements:**
+
 ```typescript
 interface UNSDataModel {
   modelVersion: string;
@@ -530,18 +556,21 @@ interface UNSDataModel {
 #### 4.2 DataOps Implementation
 
 **Data Transformation Pipeline:**
+
 1. **Data Normalization**: Standardize units, formats, and data structures across heterogeneous CNC machines
 2. **Data Contextualization**: Enrich raw sensor data with operational context, maintenance records, and production parameters
 3. **Data Aggregation**: Create time-based aggregations for trending and historical analysis
 4. **Data Validation**: Implement quality checks and anomaly detection for data integrity
 
 **Functional Namespace Processing:**
+
 - Subscribe to Edge namespace raw data
 - Apply business logic and calculations (OEE, efficiency metrics)
 - Publish processed results to functional namespaces
 - Enable cross-domain data integration and analysis
 
 **Dynamic Data Operations:**
+
 - Real-time data normalization for multi-vendor CNC machines
 - Contextual data enrichment using metadata and operational parameters
 - Automated data quality scoring and validation
@@ -575,6 +604,7 @@ interface ScheduleNamespace {
 ```
 
 **Real-time Schedule Optimization:**
+
 - Dynamic work order prioritization based on real-time conditions
 - Predictive scheduling using historical performance data
 - Automated schedule adjustments for maintenance windows
@@ -603,7 +633,7 @@ class CNCSimulator {
     return {
       ...this.generateOperationalData(),
       ...this.generateSensorData(),
-      ...this.generateMaintenanceData()
+      ...this.generateMaintenanceData(),
     };
   }
 }
@@ -612,12 +642,14 @@ class CNCSimulator {
 #### 5.2 Realistic Data Patterns
 
 **Normal Operation Patterns**:
+
 - Cyclic patterns based on machining cycles
 - Tool wear progression over time
 - Temperature variations with load
 - Vibration signatures specific to operations
 
 **Anomaly Injection**:
+
 - Gradual tool wear leading to quality issues
 - Bearing degradation patterns
 - Coolant system failures
@@ -625,18 +657,21 @@ class CNCSimulator {
 - Spindle imbalance development
 
 **Seasonal Variations**:
+
 - Ambient temperature effects
 - Production schedule variations
 - Maintenance window impacts
 
 #### 5.3 Data Generation Specifications
 
-**Frequency**: 
+**Frequency**:
+
 - High-frequency sensors: 10Hz (vibration, power)
 - Medium-frequency: 1Hz (temperature, position)
 - Low-frequency: 0.1Hz (operational status, part counts)
 
 **Data Volume Estimation**:
+
 - Per machine: ~50 data points per second
 - 10 machines: ~500 data points per second
 - Daily volume: ~43.2M data points
@@ -649,16 +684,19 @@ class CNCSimulator {
 #### 6.1 Condition Monitoring
 
 **Vibration Analysis**:
+
 - FFT analysis for bearing condition
 - Spindle balance monitoring
 - Tool chatter detection
 
 **Thermal Monitoring**:
+
 - Bearing temperature trending
 - Coolant system efficiency
 - Thermal expansion compensation
 
 **Performance Metrics**:
+
 - Cycle time degradation
 - Surface finish quality trends
 - Tool life consumption rates
@@ -666,16 +704,19 @@ class CNCSimulator {
 #### 6.2 Maintenance Scheduling
 
 **Time-based Maintenance**:
+
 - Scheduled PM based on operating hours
 - Calendar-based inspections
 - Lubrication schedules
 
 **Condition-based Maintenance**:
+
 - Trigger maintenance based on sensor thresholds
 - Trend analysis for early intervention
 - Predictive replacement scheduling
 
 **Integration Points**:
+
 - ERP system connectivity for work order generation
 - Inventory management for parts availability
 - Technician scheduling and dispatch
@@ -687,6 +728,7 @@ class CNCSimulator {
 #### 7.1 Machine Learning Models
 
 **Failure Prediction Models**:
+
 ```typescript
 interface MLModels {
   bearing_failure: 'RandomForestClassifier';
@@ -697,6 +739,7 @@ interface MLModels {
 ```
 
 **Feature Engineering**:
+
 - Statistical features (mean, std, skewness, kurtosis)
 - Frequency domain features (FFT coefficients)
 - Time domain features (RMS, peak, crest factor)
@@ -705,16 +748,19 @@ interface MLModels {
 #### 7.2 Recommendation Engine
 
 **Action Recommendations**:
+
 - Immediate: Stop machine, change tool, adjust parameters
 - Short-term: Schedule maintenance, order parts, adjust production
 - Long-term: Equipment upgrade, process optimization, training needs
 
 **Cost-Benefit Analysis**:
+
 - Maintenance cost vs. downtime cost
 - Part replacement cost vs. catastrophic failure cost
 - Energy optimization recommendations
 
 **Decision Support**:
+
 - Risk assessment matrices
 - Maintenance priority scoring
 - Resource allocation optimization
@@ -726,18 +772,21 @@ interface MLModels {
 #### 8.1 Dashboard Hierarchy
 
 **Plant Overview Dashboard**:
+
 - Overall equipment effectiveness (OEE)
 - Production metrics
 - Alert summary
 - Resource utilization
 
 **Machine Detail View**:
+
 - Real-time operational status
 - Performance trends
 - Maintenance history
 - Predictive analytics results
 
 **Maintenance Manager Dashboard**:
+
 - Work order queue
 - Parts inventory status
 - Technician assignments
@@ -746,12 +795,14 @@ interface MLModels {
 #### 8.2 Visualization Components
 
 **Real-time Widgets** (using Recharts):
+
 - Status indicators with color coding
 - Real-time line charts and area charts
 - Alert notification panels
 - Progress bars for maintenance intervals
 
 **Analytics Views** (using ReactFlow):
+
 - UNS hierarchy visualization
 - Network topology for asset relationships
 - Trend analysis charts
@@ -764,30 +815,35 @@ interface MLModels {
 ### 9. Implementation Phases
 
 #### Phase 1: Foundation (Weeks 1-2)
+
 - [ ] Set up Next.js + TypeScript development environment
 - [ ] Configure Supabase with Prisma ORM
 - [ ] Set up EMQX Cloud deployment and configure Upstash Redis integration
 - [ ] Create CNC simulator framework with MQTT.js
 
 #### Phase 2: Data Layer (Weeks 3-4)
+
 - [ ] Implement Supabase database schema
 - [ ] Create data ingestion pipeline with Prisma
 - [ ] Build 10 CNC machine simulators
 - [ ] Implement data validation and quality checks
 
 #### Phase 3: Analytics Engine (Weeks 5-6)
+
 - [ ] Develop basic anomaly detection
 - [ ] Implement preventative maintenance logic
 - [ ] Create machine learning pipeline
 - [ ] Build recommendation engine
 
 #### Phase 4: User Interface (Weeks 7-8)
+
 - [ ] Develop plant overview dashboard with Recharts
 - [ ] Create machine detail views with shadcn/ui
 - [ ] Implement UNS hierarchy visualization with ReactFlow
 - [ ] Add real-time alerting system with Supabase Realtime
 
 #### Phase 5: Integration & Testing (Weeks 9-10)
+
 - [ ] End-to-end system testing
 - [ ] Performance optimization with Vercel deployment
 - [ ] Documentation and training materials
@@ -798,12 +854,14 @@ interface MLModels {
 ### 10. Technical Specifications
 
 #### 10.1 Performance Requirements
+
 - **Latency**: < 100ms for critical alerts
 - **Throughput**: Handle 1000+ messages/second via EMQX Cloud
 - **Availability**: 99.5% uptime target with Vercel + Supabase + EMQX Cloud
 - **Scalability**: Support 50+ machines with minimal changes
 
 #### 10.2 Security Considerations
+
 - MQTT authentication and authorization via EMQX Cloud
 - TLS encryption for data in transit (MQTT over TLS)
 - Upstash Redis authentication for data bridge
@@ -812,6 +870,7 @@ interface MLModels {
 - Network segmentation for OT/IT separation
 
 #### 10.3 Data Retention
+
 - Real-time data: 7 days in Supabase hot storage
 - Aggregated data: 1 year in Supabase warm storage
 - Historical trends: 5 years in Supabase cold storage
@@ -822,18 +881,21 @@ interface MLModels {
 ### 11. Success Metrics
 
 #### 11.1 Technical KPIs
+
 - System availability and performance
 - Data quality and completeness
 - Prediction accuracy rates
 - Alert false positive/negative rates
 
 #### 11.2 Business KPIs
+
 - Reduction in unplanned downtime
 - Improvement in maintenance efficiency
 - Cost savings from predictive maintenance
 - Overall equipment effectiveness (OEE) improvement
 
 #### 11.3 Demo Scenarios
+
 1. **Normal Operations**: Show real-time monitoring with Recharts
 2. **Predictive Alert**: Demonstrate early warning system
 3. **UNS Hierarchy**: Visualize namespace structure with ReactFlow
@@ -846,18 +908,21 @@ interface MLModels {
 ### 12. Future Enhancements
 
 #### 12.1 Advanced Analytics
+
 - Digital twin integration
 - Augmented reality maintenance guidance
 - Advanced ML models (deep learning, reinforcement learning)
 - Cross-machine correlation analysis
 
 #### 12.2 Integration Opportunities
+
 - ERP/MES system connectivity via GraphQL
 - Supplier integration for automatic parts ordering
 - Quality management system integration
 - Energy management optimization
 
 #### 12.3 Scalability Considerations
+
 - Multi-plant deployment with Vercel regions
 - Cloud-native architecture with Supabase scaling
 - Edge computing capabilities
@@ -873,6 +938,7 @@ interface MLModels {
 ## Alignment Summary
 
 **Key Alignments Made:**
+
 - **MQTT Broker**: Corrected to EMQX Cloud (managed MQTT service) with Upstash Redis data integration
 - **Charts**: Changed from Chart.js to Recharts for all data visualization
 - **ORM**: Added Prisma explicitly throughout database sections
@@ -884,6 +950,7 @@ interface MLModels {
 - **Deployment**: Ensured Vercel + Supabase alignment throughout
 
 **Corrected MQTT Architecture:**
+
 - **EMQX Cloud**: Professional managed MQTT broker for IoT applications
 - **Data Integration**: Built-in EMQX Cloud → Upstash Redis bridge for seamless data flow
 - **WebSocket Support**: MQTT.js client library for browser-based MQTT over WebSocket

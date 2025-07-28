@@ -32,7 +32,8 @@ app/
 
 **Purpose:** Application health check for monitoring and deployment verification
 **Parameters:** None
-**Response:** 
+**Response:**
+
 ```json
 {
   "status": "ok",
@@ -41,20 +42,24 @@ app/
   "environment": "development"
 }
 ```
+
 **Errors:** None expected for basic implementation
 
 ## Future API Architecture
 
 ### MQTT Integration Endpoints
+
 - **POST /api/mqtt/publish** - Publish messages to UNS topics
 - **GET /api/mqtt/status** - MQTT broker connection status
 
 ### Machine Data Endpoints
+
 - **GET /api/machines** - List all CNC machines
 - **GET /api/machines/[id]** - Individual machine data
 - **GET /api/machines/[id]/metrics** - Real-time machine metrics
 
 ### Analytics Endpoints
+
 - **POST /api/analytics/predict** - Trigger predictive analysis
 - **GET /api/analytics/alerts** - Active maintenance alerts
 

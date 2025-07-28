@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -14,7 +14,7 @@ export function getStatusColor(status: string) {
     maintenance: 'text-status-maintenance',
     offline: 'text-status-offline',
   };
-  
+
   return statusColors[status as keyof typeof statusColors] || 'text-gray-500';
 }
 
@@ -26,7 +26,7 @@ export function getStatusBgColor(status: string) {
     maintenance: 'bg-status-maintenance',
     offline: 'bg-status-offline',
   };
-  
+
   return statusBgColors[status as keyof typeof statusBgColors] || 'bg-gray-500';
 }
 
@@ -36,6 +36,6 @@ export function formatIndustrialValue(value: number, unit?: string): string {
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   }).format(value);
-  
+
   return unit ? `${formatted} ${unit}` : formatted;
 }
