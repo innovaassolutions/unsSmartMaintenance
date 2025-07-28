@@ -77,6 +77,20 @@ Simulated CNC Machines → MQTT Topics (UNS Hierarchy) → EMQX Cloud → Upstas
    # Edit .env.local with your configuration values
    ```
 
+   Required environment variables:
+
+   ```env
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+   # MQTT Configuration for CNC Machine Data
+   MQTT_BROKER_URL=mqtt://your-mqtt-broker.emqxcloud.com:1883
+   MQTT_USERNAME=your-mqtt-username
+   MQTT_PASSWORD=your-mqtt-password
+   ```
+
 4. **Run the development server**
 
    ```bash
@@ -88,13 +102,16 @@ Simulated CNC Machines → MQTT Topics (UNS Hierarchy) → EMQX Cloud → Upstas
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
+- `npm run dev` - Start development server with Turbopack
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
 - `npm test` - Run test suite
 - `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
 
 ## 🧪 Development
 
@@ -111,13 +128,60 @@ This project uses:
 
 ```
 ├── .agent-os/          # Agent OS documentation and specs
-├── app/                # Next.js app directory
-├── components/         # Reusable React components
-├── lib/                # Utility functions and configurations
-├── types/              # TypeScript type definitions
-├── __tests__/          # Test files
-└── public/             # Static assets
+├── src/
+│   ├── app/            # Next.js 15 App Router pages and layouts
+│   │   ├── api/        # API routes
+│   │   ├── globals.css # Global styles with TailwindCSS
+│   │   ├── layout.tsx  # Root layout
+│   │   └── page.tsx    # Home page
+│   ├── components/     # Reusable React components
+│   │   └── ui/         # shadcn/ui components
+│   ├── lib/            # Utility functions and configurations
+│   ├── types/          # TypeScript type definitions
+│   ├── __tests__/      # Test files with Jest and React Testing Library
+│   └── __mocks__/      # Mock implementations for testing
+├── public/             # Static assets
+└── docs/               # Additional documentation
 ```
+
+### Testing
+
+The project includes comprehensive testing setup:
+
+- **Unit Tests:** Component and utility function tests
+- **Integration Tests:** API route and workflow tests
+- **Build Tests:** Production build and deployment validation
+- **Mock Services:** Supabase and MQTT client mocks for testing
+
+Run tests with:
+
+```bash
+npm test                    # Run all tests (53 tests)
+npm run test:watch          # Watch mode for development
+npm run test:coverage       # With coverage report
+```
+
+### Development Workflow
+
+1. **Start development:**
+
+   ```bash
+   npm run dev
+   ```
+
+2. **Before committing:**
+
+   ```bash
+   npm run lint            # Check for issues
+   npm run format          # Format code
+   npm test                # Run tests
+   ```
+
+3. **Build for production:**
+   ```bash
+   npm run build
+   npm run start
+   ```
 
 ## 🎭 User Personas
 

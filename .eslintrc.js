@@ -40,12 +40,12 @@ module.exports = {
     {
       files: [
         '*.config.js',
-        '*.config.ts', 
+        '*.config.ts',
         '*.config.mjs',
         'jest.config.js',
         'tailwind.config.ts',
         'next.config.ts',
-        'postcss.config.mjs'
+        'postcss.config.mjs',
       ],
       rules: {
         '@typescript-eslint/no-require-imports': 'off',

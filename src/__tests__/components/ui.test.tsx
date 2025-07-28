@@ -23,13 +23,13 @@ describe('UI Components', () => {
     });
 
     test('should render industrial variant button', () => {
-      render(<Button variant='industrial'>Industrial Button</Button>);
+      render(<Button variant="industrial">Industrial Button</Button>);
       const button = screen.getByRole('button', { name: 'Industrial Button' });
       expect(button).toBeInTheDocument();
     });
 
     test('should apply correct size classes', () => {
-      render(<Button size='lg'>Large Button</Button>);
+      render(<Button size="lg">Large Button</Button>);
       const button = screen.getByRole('button', { name: 'Large Button' });
       expect(button).toHaveClass('h-10');
     });
@@ -59,20 +59,20 @@ describe('UI Components', () => {
 describe('TailwindCSS Integration', () => {
   test('should apply custom industrial classes', () => {
     render(
-      <div className='bg-industrial-500 text-white'>Industrial Styled</div>
+      <div className="bg-industrial-500 text-white">Industrial Styled</div>
     );
     const element = screen.getByText('Industrial Styled');
     expect(element).toHaveClass('bg-industrial-500', 'text-white');
   });
 
   test('should apply status color classes', () => {
-    render(<div className='text-status-operational'>Operational Status</div>);
+    render(<div className="text-status-operational">Operational Status</div>);
     const element = screen.getByText('Operational Status');
     expect(element).toHaveClass('text-status-operational');
   });
 
   test('should apply data visualization colors', () => {
-    render(<div className='bg-data-primary'>Primary Data</div>);
+    render(<div className="bg-data-primary">Primary Data</div>);
     const element = screen.getByText('Primary Data');
     expect(element).toHaveClass('bg-data-primary');
   });
@@ -81,7 +81,7 @@ describe('TailwindCSS Integration', () => {
 describe('Typography Plugin', () => {
   test('should apply prose classes from typography plugin', () => {
     render(
-      <div className='prose'>
+      <div className="prose">
         <h1>Typography Test</h1>
         <p>This tests the typography plugin.</p>
       </div>
