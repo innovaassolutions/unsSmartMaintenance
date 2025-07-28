@@ -133,5 +133,5 @@ Simulated CNC Machines → MQTT Topics (UNS Hierarchy) → EMQX Cloud → Upstas
 
 ### Repository Configuration
 
-- **Code Repository URL:** To be configured during initialization
+- **Code Repository URL:** https://github.com/innovaassolutions/unsSmartMaintenance.git
 - **Deployment Solution:** Vercel with GitHub integration

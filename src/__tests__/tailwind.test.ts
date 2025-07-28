@@ -57,7 +57,7 @@ describe('TailwindCSS Configuration', () => {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       if (errorMessage.includes('tailwind')) {
-        fail(`TailwindCSS build error: ${errorMessage}`);
+        throw new Error(`TailwindCSS build error: ${errorMessage}`);
       }
       // Other build errors might be expected at this stage
     }
