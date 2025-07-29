@@ -14,9 +14,10 @@
 
 ### Database
 
-- **Primary:** Supabase (PostgreSQL)
+- **Application Data:** Supabase (PostgreSQL) - User auth, metadata, static data
+- **Time-Series Data:** TimescaleDB Cloud - Sensor readings, machine status, alerts
 - **Version:** Latest stable
-- **ORM:** Prisma
+- **ORM:** Prisma (multi-database support)
 - **Real-time:** Supabase subscriptions
 
 ## Frontend Stack

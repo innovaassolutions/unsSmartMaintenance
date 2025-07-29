@@ -1,0 +1,185 @@
+// Prisma Schema for UNS Smart Maintenance System
+// Hybrid Architecture: Supabase (app data) + TimescaleDB (time-series data)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Supabase database for application data
+datasource supabase {
+  provider = "postgresql"
+  url      = env("SUPABASE_DATABASE_URL")
+}
+
+// TimescaleDB Cloud for time-series data
+datasource timescale {
+  provider = "postgresql"
+  url      = env("TIMESCALEDB_URL")
+}
+
+// ==============================================
+// SUPABASE MODELS (Application Data)
+// ==============================================
+
+model Organization {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @updatedAt @db.Timestamptz
+
+  // Relations
+  users    UserProfile[]
+  machines MachineDefinition[]
+
+  @@map("organizations")
+  @@schema("supabase")
+}
+
+model UserProfile {
+  id              String   @id @default(uuid()) @db.Uuid
+  user_id         String   @unique @db.Uuid
+  organization_id String   @db.Uuid
+  full_name       String   @db.VarChar(100)
+  role            String   @db.VarChar(50)
+  department      String?  @db.VarChar(50)
+  created_at      DateTime @default(now()) @db.Timestamptz
+  updated_at      DateTime @updatedAt @db.Timestamptz
+
+  // Relations
+  organization Organization @relation(fields: [organization_id], references: [id])
+
+  @@map("user_profiles")
+  @@schema("supabase")
+}
+
+model MachineDefinition {
+  id              String   @id @default(uuid()) @db.Uuid
+  organization_id String   @db.Uuid
+  machine_name    String   @db.VarChar(100)
+  machine_type    String   @db.VarChar(50)
+  manufacturer    String?  @db.VarChar(100)
+  model           String?  @db.VarChar(100)
+  location        String?  @db.VarChar(200)
+  installation_date DateTime? @db.Date
+  created_at      DateTime @default(now()) @db.Timestamptz
+  updated_at      DateTime @updatedAt @db.Timestamptz
+
+  // Relations
+  organization Organization @relation(fields: [organization_id], references: [id])
+  sensors      Sensor[]
+
+  @@map("machine_definitions")
+  @@schema("supabase")
+}
+
+model MaintenanceCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  @@map("maintenance_categories")
+  @@schema("supabase")
+}
+
+model Sensor {
+  id           String   @id @default(uuid()) @db.Uuid
+  machine_id   String   @db.Uuid
+  sensor_name  String   @db.VarChar(100)
+  sensor_type  String   @db.VarChar(50)
+  mqtt_topic   String   @db.VarChar(200)
+  unit         String?  @db.VarChar(20)
+  min_value    Decimal? @db.Decimal(15, 6)
+  max_value    Decimal? @db.Decimal(15, 6)
+  calibration_offset Decimal? @db.Decimal(15, 6)
+  calibration_factor Decimal? @db.Decimal(15, 6)
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamptz
+  updated_at   DateTime @updatedAt @db.Timestamptz
+
+  // Relations
+  machine MachineDefinition @relation(fields: [machine_id], references: [id])
+
+  @@map("sensors")
+  @@schema("supabase")
+}
+
+// ==============================================
+// TIMESCALEDB MODELS (Time-Series Data)
+// ==============================================
+
+model SensorReading {
+  id           String   @id @default(uuid()) @db.Uuid
+  sensor_id    String   @db.Uuid
+  timestamp    DateTime @default(now()) @db.Timestamptz
+  value        Decimal  @db.Decimal(15, 6)
+  quality_code Int      @default(1)
+  metadata     Json?
+
+  @@map("sensor_readings")
+  @@schema("timescale")
+  @@index([sensor_id, timestamp])
+  @@index([timestamp])
+}
+
+model MachineStatus {
+  id         String   @id @default(uuid()) @db.Uuid
+  machine_id String   @db.Uuid
+  timestamp  DateTime @default(now()) @db.Timestamptz
+  status     String   @db.VarChar(50) // running, idle, maintenance, fault, offline
+  uptime_seconds Int?
+  cycle_count    Int?
+  efficiency_percent Decimal? @db.Decimal(5, 2)
+  metadata   Json?
+
+  @@map("machine_status")
+  @@schema("timescale")
+  @@index([machine_id, timestamp])
+  @@index([timestamp])
+}
+
+model Alert {
+  id           String   @id @default(uuid()) @db.Uuid
+  machine_id   String   @db.Uuid
+  sensor_id    String?  @db.Uuid
+  timestamp    DateTime @default(now()) @db.Timestamptz
+  alert_type   String   @db.VarChar(50) // warning, critical, info
+  severity     Int      // 1-5 scale
+  title        String   @db.VarChar(200)
+  description  String?  @db.Text
+  acknowledged Boolean  @default(false)
+  acknowledged_by String? @db.Uuid
+  acknowledged_at DateTime? @db.Timestamptz
+  resolved     Boolean  @default(false)
+  resolved_at  DateTime? @db.Timestamptz
+  metadata     Json?
+
+  @@map("alerts")
+  @@schema("timescale")
+  @@index([machine_id, timestamp])
+  @@index([timestamp])
+  @@index([alert_type, resolved])
+}
+
+model MaintenanceRecord {
+  id                String   @id @default(uuid()) @db.Uuid
+  machine_id        String   @db.Uuid
+  category_id       String?  @db.Uuid
+  scheduled_date    DateTime @db.Timestamptz
+  completed_date    DateTime? @db.Timestamptz
+  maintenance_type  String   @db.VarChar(50) // preventive, corrective, predictive
+  description       String   @db.Text
+  performed_by      String?  @db.Uuid
+  duration_minutes  Int?
+  cost              Decimal? @db.Decimal(10, 2)
+  notes             String?  @db.Text
+  status            String   @db.VarChar(50) // scheduled, in_progress, completed, cancelled
+  created_at        DateTime @default(now()) @db.Timestamptz
+  updated_at        DateTime @updatedAt @db.Timestamptz
+
+  @@map("maintenance_records")
+  @@schema("timescale")
+  @@index([machine_id, scheduled_date])
+  @@index([maintenance_type, status])
+}

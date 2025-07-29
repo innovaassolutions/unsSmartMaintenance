@@ -21,11 +21,18 @@ global.Response =
   };
 global.Headers = global.Headers || class Headers {};
 
+// Polyfill for pg library (Node.js crypto APIs)
+global.TextEncoder = global.TextEncoder || require('util').TextEncoder;
+global.TextDecoder = global.TextDecoder || require('util').TextDecoder;
+global.crypto = global.crypto || require('crypto').webcrypto;
+
 // Mock environment variables for testing
 process.env.NODE_ENV = 'test';
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://mock-supabase.supabase.co';
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'mock-supabase-anon-key';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'mock-supabase-service-role-key';
+process.env.SUPABASE_DATABASE_URL = 'postgresql://postgres:test@localhost:5432/test';
+process.env.TIMESCALEDB_URL = 'postgresql://test:test@localhost:5432/test_timescale';
 process.env.MQTT_BROKER_URL = 'mqtt://mock-mqtt-broker:1883';
 process.env.MQTT_USERNAME = 'mock-mqtt-user';
 process.env.MQTT_PASSWORD = 'mock-mqtt-password';
