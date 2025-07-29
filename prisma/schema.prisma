@@ -5,21 +5,98 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Supabase database for application data
-datasource supabase {
+// Primary database - Supabase (PostgreSQL)
+// Note: TimescaleDB integration will be handled through separate connection
+datasource db {
   provider = "postgresql"
   url      = env("SUPABASE_DATABASE_URL")
-}
-
-// TimescaleDB Cloud for time-series data
-datasource timescale {
-  provider = "postgresql"
-  url      = env("TIMESCALEDB_URL")
 }
 
 // ==============================================
 // SUPABASE MODELS (Application Data)
 // ==============================================
+
+// UNS Topic Registry for standardized namespace management
+model TopicRegistry {
+  id              String   @id @default(uuid()) @db.Uuid
+  topic_path      String   @unique @db.VarChar(500)
+  topic_type      String   @db.VarChar(20) // descriptive, functional, informational, ad_hoc
+  enterprise      String   @db.VarChar(50)
+  site            String   @db.VarChar(50)
+  area            String   @db.VarChar(50)
+  work_cell       String   @db.VarChar(50)
+  work_unit       String   @db.VarChar(50)
+  data_category   String   @db.VarChar(50)
+  metric_name     String   @db.VarChar(100)
+  description     String?  @db.Text
+  unit            String?  @db.VarChar(20)
+  data_type       String   @db.VarChar(20) // number, string, boolean, object
+  min_value       Decimal? @db.Decimal(15, 6)
+  max_value       Decimal? @db.Decimal(15, 6)
+  schema_definition Json?
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now()) @db.Timestamptz
+  updated_at      DateTime @updatedAt @db.Timestamptz
+
+  // Relations
+  cnc_machine CNCMachine? @relation(fields: [work_unit], references: [machine_id])
+
+  @@map("topic_registry")
+  @@index([topic_path])
+  @@index([enterprise, site, area, work_cell, work_unit])
+  @@index([topic_type])
+  @@index([is_active])
+}
+
+// CNC Machines for UNS hierarchy work units
+model CNCMachine {
+  id                String   @id @default(uuid()) @db.Uuid
+  machine_id        String   @unique @db.VarChar(20)
+  display_name      String   @db.VarChar(100)
+  manufacturer      String?  @db.VarChar(50)
+  model             String?  @db.VarChar(50)
+  enterprise        String   @db.VarChar(50)
+  site              String   @db.VarChar(50)
+  area              String   @db.VarChar(50)
+  work_cell         String   @db.VarChar(50)
+  installation_date DateTime? @db.Date
+  operational_status String  @default("operational") @db.VarChar(20) // operational, maintenance, offline, error
+  capabilities      Json?
+  specifications    Json?
+  created_at        DateTime @default(now()) @db.Timestamptz
+  updated_at        DateTime @updatedAt @db.Timestamptz
+  
+  // Pipeline integration fields
+  last_data_received    DateTime? @db.Timestamptz
+  data_quality_score    Decimal?  @default(1.0) @db.Decimal(3,2)
+  total_messages_received BigInt  @default(0)
+  pipeline_status       String   @default("unknown") @db.VarChar(20)
+
+  // Relations
+  topic_registries TopicRegistry[]
+  sensor_readings  SensorReading[]
+  validation_errors DataValidationError[]
+
+  @@map("cnc_machines")
+  @@index([machine_id])
+  @@index([enterprise, site, area, work_cell])
+  @@index([operational_status])
+}
+
+// Topic Subscriptions for role-based access control
+model TopicSubscription {
+  id            String   @id @default(uuid()) @db.Uuid
+  user_role     String   @db.VarChar(50) // factory_manager, production_manager, maintenance_technician, executive
+  topic_pattern String   @db.Text
+  access_level  String   @db.VarChar(20) // read, write, admin
+  description   String?  @db.Text
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz
+
+  @@map("topic_subscriptions")
+  @@index([user_role])
+  @@index([is_active])
+}
 
 model Organization {
   id          String   @id @default(uuid()) @db.Uuid
@@ -33,7 +110,6 @@ model Organization {
   machines MachineDefinition[]
 
   @@map("organizations")
-  @@schema("supabase")
 }
 
 model UserProfile {
@@ -50,7 +126,6 @@ model UserProfile {
   organization Organization @relation(fields: [organization_id], references: [id])
 
   @@map("user_profiles")
-  @@schema("supabase")
 }
 
 model MachineDefinition {
@@ -70,7 +145,6 @@ model MachineDefinition {
   sensors      Sensor[]
 
   @@map("machine_definitions")
-  @@schema("supabase")
 }
 
 model MaintenanceCategory {
@@ -80,7 +154,6 @@ model MaintenanceCategory {
   created_at  DateTime @default(now()) @db.Timestamptz
 
   @@map("maintenance_categories")
-  @@schema("supabase")
 }
 
 model Sensor {
@@ -102,25 +175,33 @@ model Sensor {
   machine MachineDefinition @relation(fields: [machine_id], references: [id])
 
   @@map("sensors")
-  @@schema("supabase")
 }
 
 // ==============================================
-// TIMESCALEDB MODELS (Time-Series Data)
+// TIME-SERIES DATA MODELS 
+// Note: These models represent the structure for TimescaleDB integration
+// They will be managed through separate database connections
 // ==============================================
 
 model SensorReading {
-  id           String   @id @default(uuid()) @db.Uuid
-  sensor_id    String   @db.Uuid
-  timestamp    DateTime @default(now()) @db.Timestamptz
-  value        Decimal  @db.Decimal(15, 6)
-  quality_code Int      @default(1)
-  metadata     Json?
-
+  id             BigInt    @id @default(autoincrement())
+  machineId      String    @map("machine_id") @db.Uuid
+  sensorType     String    @map("sensor_type") @db.VarChar(50)
+  topicPath      String    @map("topic_path")
+  valueNumeric   Decimal?  @map("value_numeric") @db.Decimal(12,4)
+  valueText      String?   @map("value_text")
+  valueBoolean   Boolean?  @map("value_boolean")
+  unit           String?   @db.VarChar(20)
+  timestamp      DateTime  @default(now())
+  qualityCode    Int?      @map("quality_code") @default(192)
+  createdAt      DateTime  @map("created_at") @default(now())
+  
+  machine        CNCMachine @relation(fields: [machineId], references: [id])
+  
+  @@index([machineId, timestamp(sort: Desc)])
+  @@index([sensorType, timestamp(sort: Desc)])
+  @@index([topicPath, timestamp(sort: Desc)])
   @@map("sensor_readings")
-  @@schema("timescale")
-  @@index([sensor_id, timestamp])
-  @@index([timestamp])
 }
 
 model MachineStatus {
@@ -134,7 +215,7 @@ model MachineStatus {
   metadata   Json?
 
   @@map("machine_status")
-  @@schema("timescale")
+  // Note: This table should be created in TimescaleDB for optimal time-series performance
   @@index([machine_id, timestamp])
   @@index([timestamp])
 }
@@ -156,7 +237,7 @@ model Alert {
   metadata     Json?
 
   @@map("alerts")
-  @@schema("timescale")
+  // Note: This table should be created in TimescaleDB for optimal time-series performance
   @@index([machine_id, timestamp])
   @@index([timestamp])
   @@index([alert_type, resolved])
@@ -179,7 +260,40 @@ model MaintenanceRecord {
   updated_at        DateTime @updatedAt @db.Timestamptz
 
   @@map("maintenance_records")
-  @@schema("timescale")
+  // Note: This table should be created in TimescaleDB for optimal time-series performance
   @@index([machine_id, scheduled_date])
   @@index([maintenance_type, status])
+}
+
+// ==============================================
+// PIPELINE MODELS (Added for MQTT to Supabase Pipeline)
+// ==============================================
+
+model PipelineMetric {
+  id          BigInt    @id @default(autoincrement())
+  metricType  String    @map("metric_type") @db.VarChar(50)
+  metricName  String    @map("metric_name") @db.VarChar(100)
+  value       Decimal   @db.Decimal(10,4)
+  unit        String?   @db.VarChar(20)
+  tags        Json?
+  timestamp   DateTime  @default(now())
+  
+  @@index([metricType, timestamp(sort: Desc)])
+  @@index([metricName, timestamp(sort: Desc)])
+  @@map("pipeline_metrics")
+}
+
+model DataValidationError {
+  id            BigInt    @id @default(autoincrement())
+  machineId     String?   @map("machine_id") @db.Uuid
+  topicPath     String    @map("topic_path")
+  errorType     String    @map("error_type") @db.VarChar(50)
+  errorMessage  String    @map("error_message")
+  rawPayload    Json?     @map("raw_payload")
+  attemptedAt   DateTime  @map("attempted_at") @default(now())
+  
+  machine       CNCMachine? @relation(fields: [machineId], references: [id])
+  
+  @@index([machineId, errorType, attemptedAt(sort: Desc)])
+  @@map("data_validation_errors")
 }

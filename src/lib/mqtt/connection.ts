@@ -73,13 +73,13 @@ export function validateMQTTConfig(config: MQTTConnectionConfig): void {
     throw new Error('Invalid protocol. Must be one of: mqtt, mqtts, ws, wss');
   }
 
-  // Validate authentication
-  if (!config.username || typeof config.username !== 'string') {
-    throw new Error('Username is required and must be a string');
+  // Validate authentication (allow empty for anonymous connections)
+  if (config.username !== undefined && typeof config.username !== 'string') {
+    throw new Error('Username must be a string if provided');
   }
 
-  if (!config.password || typeof config.password !== 'string') {
-    throw new Error('Password is required and must be a string');
+  if (config.password !== undefined && typeof config.password !== 'string') {
+    throw new Error('Password must be a string if provided');
   }
 
   // Validate client ID
@@ -177,13 +177,19 @@ export function createMQTTConnection(config: MQTTConnectionConfig): Promise<Mqtt
       host: config.host,
       port: config.port,
       protocol: config.protocol,
-      username: config.username,
-      password: config.password,
       keepalive: config.keepalive,
       clean: config.clean,
       reconnectPeriod: config.reconnectPeriod,
       clientId: config.clientId
     };
+
+    // Only add credentials if they are provided (for anonymous connections)
+    if (config.username) {
+      options.username = config.username;
+    }
+    if (config.password) {
+      options.password = config.password;
+    }
 
     // Create connection
     const client = mqtt.connect(options);
