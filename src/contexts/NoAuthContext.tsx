@@ -69,10 +69,22 @@ export function NoAuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Default values returned during SSR/prerender when no provider is mounted
+const defaultAuthValue: AuthContextType = {
+  user: null,
+  session: null,
+  isLoading: true,
+  signUp: async () => ({ error: 'No auth provider' }),
+  signIn: async () => ({ error: 'No auth provider' }),
+  signOut: async () => ({ error: 'No auth provider' }),
+  resetPassword: async () => ({ error: 'No auth provider' }),
+};
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within a NoAuthProvider');
+    // During SSR/build prerender, return safe defaults instead of throwing
+    return defaultAuthValue;
   }
   return context;
 }

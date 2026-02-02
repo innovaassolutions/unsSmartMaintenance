@@ -52,9 +52,9 @@ export class EMQXCloudAPI {
     data?: unknown
   ): Promise<Response> {
     const url = `${this.config.apiUrl}/api/v5/${endpoint}`;
-    
+
     const headers: Record<string, string> = {
-      'Authorization': `Bearer ${this.config.apiKey}`,
+      Authorization: `Bearer ${this.config.apiKey}`,
       'Content-Type': 'application/json',
     };
 
@@ -68,10 +68,12 @@ export class EMQXCloudAPI {
     }
 
     const response = await fetch(url, options);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`EMQX API request failed: ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(
+        `EMQX API request failed: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     return response;
@@ -130,7 +132,10 @@ export class EMQXCloudAPI {
    * Delete ACL rule
    */
   async deleteACLRule(username: string, topic: string): Promise<void> {
-    await this.makeRequest(`acls/${username}/${encodeURIComponent(topic)}`, 'DELETE');
+    await this.makeRequest(
+      `acls/${username}/${encodeURIComponent(topic)}`,
+      'DELETE'
+    );
   }
 
   /**
@@ -156,14 +161,21 @@ export class EMQXCloudAPI {
     const hierarchy = this.unsHierarchy.parseHierarchyLevels(topicPath);
 
     // Create ACL rules based on topic type and hierarchy
-    const aclRules = this.generateACLRulesForTopic(topicPath, topic.topic_type, hierarchy);
+    const aclRules = this.generateACLRulesForTopic(
+      topicPath,
+      topic.topic_type,
+      hierarchy
+    );
 
     // Apply each ACL rule
     for (const rule of aclRules) {
       try {
         await this.createACLRule(rule);
       } catch (error) {
-        console.warn(`Failed to create ACL rule for ${rule.username}:${rule.topic}:`, error);
+        console.warn(
+          `Failed to create ACL rule for ${rule.username}:${rule.topic}:`,
+          error
+        );
         // Continue with other rules
       }
     }
@@ -175,12 +187,21 @@ export class EMQXCloudAPI {
   private generateACLRulesForTopic(
     topicPath: string,
     topicType: string,
-    hierarchy: { enterprise: string; site: string; area: string; work_cell: string; work_unit: string }
+    hierarchy: {
+      enterprise: string;
+      site: string;
+      area: string;
+      work_cell: string;
+      work_unit: string;
+    }
   ): EMQXACLRule[] {
     const rules: EMQXACLRule[] = [];
 
     // Executive access - read-only for high-level metrics
-    if (topicPath.includes('/info/production') || topicPath.includes('/info/efficiency')) {
+    if (
+      topicPath.includes('/info/production') ||
+      topicPath.includes('/info/efficiency')
+    ) {
       rules.push({
         username: 'executive',
         topic: topicPath,
@@ -200,7 +221,10 @@ export class EMQXCloudAPI {
     }
 
     // Production Manager access - production-related topics
-    if (topicPath.includes('/info/production') || topicPath.includes('/info/status')) {
+    if (
+      topicPath.includes('/info/production') ||
+      topicPath.includes('/info/status')
+    ) {
       rules.push({
         username: 'production_manager',
         topic: topicPath,
@@ -210,9 +234,11 @@ export class EMQXCloudAPI {
     }
 
     // Maintenance Technician access - sensor and maintenance data
-    if (topicPath.includes('/info/sensors') || 
-        topicPath.includes('/info/maintenance') || 
-        topicPath.includes('/adhoc/alerts')) {
+    if (
+      topicPath.includes('/info/sensors') ||
+      topicPath.includes('/info/maintenance') ||
+      topicPath.includes('/adhoc/alerts')
+    ) {
       rules.push({
         username: 'maintenance_technician',
         topic: topicPath,
@@ -247,9 +273,19 @@ export class EMQXCloudAPI {
     const roles = [
       { username: 'executive', password: this.generateSecurePassword() },
       { username: 'factory_manager', password: this.generateSecurePassword() },
-      { username: 'production_manager', password: this.generateSecurePassword() },
-      { username: 'maintenance_technician', password: this.generateSecurePassword() },
-      { username: 'data_bridge', password: this.generateSecurePassword(), is_superuser: false },
+      {
+        username: 'production_manager',
+        password: this.generateSecurePassword(),
+      },
+      {
+        username: 'maintenance_technician',
+        password: this.generateSecurePassword(),
+      },
+      {
+        username: 'data_bridge',
+        password: this.generateSecurePassword(),
+        is_superuser: false,
+      },
     ];
 
     // Create role-based users
@@ -272,31 +308,81 @@ export class EMQXCloudAPI {
   private async setupBaseACLPatterns(): Promise<void> {
     const basePatterns = [
       // Executive - high level metrics only
-      { username: 'executive', topic: '+/+/+/+/+/info/production/+', action: 'sub' as const, permission: 'allow' as const },
-      { username: 'executive', topic: '+/+/+/+/+/info/efficiency/+', action: 'sub' as const, permission: 'allow' as const },
-      
+      {
+        username: 'executive',
+        topic: '+/+/+/+/+/info/production/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+      {
+        username: 'executive',
+        topic: '+/+/+/+/+/info/efficiency/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+
       // Factory Manager - broad operational visibility
-      { username: 'factory_manager', topic: '+/+/+/+/+/info/+/+', action: 'sub' as const, permission: 'allow' as const },
-      { username: 'factory_manager', topic: '+/+/+/+/+/func/+/+', action: 'sub' as const, permission: 'allow' as const },
-      
+      {
+        username: 'factory_manager',
+        topic: '+/+/+/+/+/info/+/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+      {
+        username: 'factory_manager',
+        topic: '+/+/+/+/+/func/+/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+
       // Production Manager - production focused
-      { username: 'production_manager', topic: '+/+/+/+/+/info/production/+', action: 'sub' as const, permission: 'allow' as const },
-      { username: 'production_manager', topic: '+/+/+/+/+/info/status/+', action: 'sub' as const, permission: 'allow' as const },
-      
+      {
+        username: 'production_manager',
+        topic: '+/+/+/+/+/info/production/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+      {
+        username: 'production_manager',
+        topic: '+/+/+/+/+/info/status/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+
       // Maintenance Technician - equipment focused
-      { username: 'maintenance_technician', topic: '+/+/+/+/+/info/sensors/+', action: 'sub' as const, permission: 'allow' as const },
-      { username: 'maintenance_technician', topic: '+/+/+/+/+/info/maintenance/+', action: 'sub' as const, permission: 'allow' as const },
-      { username: 'maintenance_technician', topic: '+/+/+/+/+/adhoc/alerts/+', action: 'sub' as const, permission: 'allow' as const },
-      
+      {
+        username: 'maintenance_technician',
+        topic: '+/+/+/+/+/info/sensors/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+      {
+        username: 'maintenance_technician',
+        topic: '+/+/+/+/+/info/maintenance/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+      {
+        username: 'maintenance_technician',
+        topic: '+/+/+/+/+/adhoc/alerts/+',
+        action: 'sub' as const,
+        permission: 'allow' as const,
+      },
+
       // Data Bridge - full access for processing
-      { username: 'data_bridge', topic: '#', action: 'pubsub' as const, permission: 'allow' as const },
+      {
+        username: 'data_bridge',
+        topic: '#',
+        action: 'pubsub' as const,
+        permission: 'allow' as const,
+      },
     ];
 
     for (const pattern of basePatterns) {
       try {
         await this.createACLRule(pattern);
       } catch (error) {
-        console.warn(`Failed to create base ACL pattern:`, error);
+        console.warn('Failed to create base ACL pattern:', error);
       }
     }
   }
@@ -336,7 +422,9 @@ export class EMQXCloudAPI {
    * Get topic metrics from EMQX Cloud
    */
   async getTopicMetrics(topicFilter?: string): Promise<EMQXTopicMetrics[]> {
-    const endpoint = topicFilter ? `topics/${encodeURIComponent(topicFilter)}` : 'topics';
+    const endpoint = topicFilter
+      ? `topics/${encodeURIComponent(topicFilter)}`
+      : 'topics';
     const response = await this.makeRequest(endpoint);
     const data = await response.json();
     return data.data || [];
@@ -356,16 +444,20 @@ export class EMQXCloudAPI {
    */
   async cleanupUnusedTopics(): Promise<void> {
     // Get all registered topics from database
-    const registeredTopics = await this.topicRegistry.searchTopics({ is_active: true });
-    const registeredTopicPaths = new Set(registeredTopics.map(t => t.topic_path));
+    const registeredTopics = await this.topicRegistry.searchTopics({
+      is_active: true,
+    });
+    const registeredTopicPaths = new Set(
+      registeredTopics.map(t => t.topic_path)
+    );
 
     // Get metrics for all topics in EMQX
     const topicMetrics = await this.getTopicMetrics();
 
     // Find topics in EMQX that are not in registry
-    const unusedTopics = topicMetrics.filter(metric => 
-      !registeredTopicPaths.has(metric.topic) && 
-      metric.subscriptions === 0
+    const unusedTopics = topicMetrics.filter(
+      metric =>
+        !registeredTopicPaths.has(metric.topic) && metric.subscriptions === 0
     );
 
     // Clean up ACL rules for unused topics
@@ -385,13 +477,14 @@ export class EMQXCloudAPI {
    */
   private generateSecurePassword(): string {
     const length = 16;
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    const charset =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
     let password = '';
-    
+
     for (let i = 0; i < length; i++) {
       password += charset.charAt(Math.floor(Math.random() * charset.length));
     }
-    
+
     return password;
   }
 
@@ -422,7 +515,10 @@ export function createEMQXCloudAPI(): EMQXCloudAPI {
   };
 
   if (!config.apiUrl || !config.apiKey) {
-    throw new Error('EMQX Cloud API configuration missing. Please set EMQX_CLOUD_API_URL and EMQX_CLOUD_API_KEY');
+    // Defer validation to runtime — allow build to succeed without env vars
+    console.warn(
+      'EMQX Cloud API configuration missing. API calls will fail until EMQX_CLOUD_API_URL and EMQX_CLOUD_API_KEY are set.'
+    );
   }
 
   return new EMQXCloudAPI(config);

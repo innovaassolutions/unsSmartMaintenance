@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Factory, TrendingUp, Wrench, Activity, Zap } from 'lucide-react';
 import PromotionalLanding from '@/components/PromotionalLanding';
 import { useAuth } from '@/contexts/NoAuthContext';
+
+export const dynamic = 'force-dynamic';
 
 interface SystemStatus {
   pipeline: {
@@ -21,6 +23,18 @@ interface SystemStatus {
 }
 
 export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800" />
+      }
+    >
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const showLanding = !user || searchParams.get('landing') === 'true';
