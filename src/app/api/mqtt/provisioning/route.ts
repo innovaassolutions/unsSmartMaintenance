@@ -7,7 +7,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTopicProvisioningService } from '@/lib/mqtt/topic-provisioning';
 import { z } from 'zod';
 
-const provisioningService = getTopicProvisioningService();
+// Lazy init to avoid module-scope crashes during Vercel page data collection
+let _provisioningService: ReturnType<typeof getTopicProvisioningService> | null = null;
+function getService() {
+  if (!_provisioningService) _provisioningService = getTopicProvisioningService();
+  return _provisioningService;
+}
 
 // Validation schema for topic provisioning request
 const provisionTopicSchema = z.object({
@@ -25,17 +30,17 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action');
 
     if (action === 'status') {
-      const status = await provisioningService.getProvisioningStatus();
+      const status = await getService().getProvisioningStatus();
       return NextResponse.json(status);
     }
 
     if (action === 'validate') {
-      const validation = await provisioningService.validateConnection();
+      const validation = await getService().validateConnection();
       return NextResponse.json(validation);
     }
 
     // Default: return provisioning status
-    const status = await provisioningService.getProvisioningStatus();
+    const status = await getService().getProvisioningStatus();
     return NextResponse.json(status);
 
   } catch (error) {
@@ -57,7 +62,7 @@ export async function POST(request: NextRequest) {
     if (action === 'topic') {
       // Provision single topic
       const validatedData = provisionTopicSchema.parse(body);
-      const result = await provisioningService.provisionTopic(validatedData.topic_path);
+      const result = await getService().provisionTopic(validatedData.topic_path);
       
       if (result.success) {
         return NextResponse.json({
@@ -75,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (action === 'machine') {
       // Provision all topics for a machine
       const validatedData = provisionMachineSchema.parse(body);
-      const result = await provisioningService.provisionMachineTopics(validatedData.machine_id);
+      const result = await getService().provisionMachineTopics(validatedData.machine_id);
       
       return NextResponse.json({
         message: `Provisioned ${result.successful} topics for machine ${validatedData.machine_id}`,
@@ -85,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     if (action === 'all') {
       // Provision all active topics
-      const result = await provisioningService.provisionAllTopics();
+      const result = await getService().provisionAllTopics();
       
       return NextResponse.json({
         message: `Bulk provisioning completed: ${result.successful} successful, ${result.failed} failed`,
@@ -95,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     if (action === 'setup') {
       // Setup role-based access
-      await provisioningService.setupRoleBasedAccess();
+      await getService().setupRoleBasedAccess();
       
       return NextResponse.json({
         message: 'Role-based access patterns configured successfully'
@@ -104,7 +109,7 @@ export async function POST(request: NextRequest) {
 
     if (action === 'sync') {
       // Sync registry with EMQX
-      const result = await provisioningService.syncWithEMQX();
+      const result = await getService().syncWithEMQX();
       
       return NextResponse.json({
         message: 'Sync completed',
