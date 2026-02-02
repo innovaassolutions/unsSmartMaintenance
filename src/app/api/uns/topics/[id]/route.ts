@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { TopicRegistry } from '@/lib/database/topic-registry';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const topicRegistry = new TopicRegistry();
 
 // Validation schema for topic updates

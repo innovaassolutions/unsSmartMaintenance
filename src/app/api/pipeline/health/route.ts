@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPipelineOrchestrator } from '@/lib/pipeline/pipeline-orchestrator'
 
+export const dynamic = 'force-dynamic';
+
 // Global pipeline instance (in a real app, this would be managed differently)
 let pipelineInstance: any = null
 

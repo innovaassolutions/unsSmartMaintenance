@@ -8,6 +8,8 @@ import { TopicRegistry } from '@/lib/database/topic-registry';
 import { TopicValidator } from '@/lib/database/topic-validator';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const topicRegistry = new TopicRegistry();
 const topicValidator = new TopicValidator();
 

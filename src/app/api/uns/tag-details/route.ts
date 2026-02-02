@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database/timescale-connection';
 
+export const dynamic = 'force-dynamic';
+
 interface TagHistory {
   time: string;
   value: number | null;

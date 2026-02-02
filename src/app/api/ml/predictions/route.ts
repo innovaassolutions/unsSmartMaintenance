@@ -8,6 +8,8 @@ import { BigQuery } from '@google-cloud/bigquery';
 import VertexAIClient from '@/lib/ml/vertex-ai-client';
 import { FeatureEngineer } from '@/lib/ml/feature-engineering';
 
+export const dynamic = 'force-dynamic';
+
 interface MLPredictionRequest {
   machine_id?: string;
   prediction_types?: ('failure' | 'rul' | 'anomaly' | 'quality')[];

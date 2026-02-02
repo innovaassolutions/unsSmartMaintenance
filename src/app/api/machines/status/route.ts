@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { executeQuery, type MachineDefinition } from '@/lib/database/timescale-connection'
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/machines/status
  * Get current status for all machines or specific machine

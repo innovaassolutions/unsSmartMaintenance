@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPrismaClient } from '@/lib/database/supabase-client';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = getPrismaClient();
 
 // GET /api/uns/machines

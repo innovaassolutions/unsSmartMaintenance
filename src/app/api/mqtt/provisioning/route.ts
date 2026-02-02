@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTopicProvisioningService } from '@/lib/mqtt/topic-provisioning';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 // Lazy init to avoid module-scope crashes during Vercel page data collection
 let _provisioningService: ReturnType<typeof getTopicProvisioningService> | null = null;
 function getService() {

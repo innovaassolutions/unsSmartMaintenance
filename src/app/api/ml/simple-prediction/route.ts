@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BigQuery } from '@google-cloud/bigquery';
 
+export const dynamic = 'force-dynamic';
+
 interface SimplePrediction {
   machine_id: string;
   analysis_timestamp: string;

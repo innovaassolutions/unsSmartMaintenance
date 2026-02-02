@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { seedCNCMachines, seedSpecificMachine } from '@/lib/database/machine-seeder';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 // Validation schema for seeding options
 const seedingOptionsSchema = z.object({
   skipExisting: z.boolean().optional().default(true),

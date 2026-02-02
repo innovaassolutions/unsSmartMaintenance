@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPrismaClient } from '@/lib/database/supabase-client';
 import { UNSHierarchy } from '@/lib/database/uns-hierarchy';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = getPrismaClient();
 const unsHierarchy = new UNSHierarchy();
 

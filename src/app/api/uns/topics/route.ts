@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AutoProvisioningTopicRegistry } from '@/lib/mqtt/topic-provisioning';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const topicRegistry = new AutoProvisioningTopicRegistry();
 
 // Validation schema for topic creation

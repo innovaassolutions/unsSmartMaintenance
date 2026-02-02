@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ContactWelderPredictionClient } from '@/lib/ml/contact-welder-prediction-client';
 import type { ContactWelderReading } from '@/lib/ml/contact-welder-features';
 
+export const dynamic = 'force-dynamic';
+
 interface PredictionAPIRequest {
   machineId: string;
   sensorData?: ContactWelderReading[];

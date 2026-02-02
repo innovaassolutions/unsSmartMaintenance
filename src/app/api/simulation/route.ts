@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { SimulationManager } from '@/lib/simulation/simulation-service';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 // Validation schema for simulation configuration
 const simulationConfigSchema = z.object({
   publishInterval: z.number().min(1000).max(60000).optional(), // 1s to 1min

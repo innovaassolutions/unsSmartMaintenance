@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContactWelderDegradationAnalysis } from '@/lib/ml/contact-welder-degradation-analysis';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const machineId = searchParams.get('machineId') || 'contact_resistance';
