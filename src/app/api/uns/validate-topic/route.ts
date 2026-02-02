@@ -10,8 +10,12 @@ import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
-const topicRegistry = new TopicRegistry();
-const topicValidator = new TopicValidator();
+// Lazy init for Vercel build compatibility
+let _topicRegistry: any = null;
+function _get_topicRegistry() { if (!_topicRegistry) _topicRegistry = new TopicRegistry(); return _topicRegistry; }
+// Lazy init for Vercel build compatibility
+let _topicValidator: any = null;
+function _get_topicValidator() { if (!_topicValidator) _topicValidator = new TopicValidator(); return _topicValidator; }
 
 // Validation schema for topic validation request
 const validateTopicSchema = z.object({
@@ -39,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Validate topic hierarchy structure
     try {
-      topicValidator.validateTopicPath(topic_path);
+      _get_topicValidator().validateTopicPath(topic_path);
       hierarchyValid = true;
       validationDetails.topic_structure = 'valid';
     } catch (error) {
@@ -49,20 +53,20 @@ export async function POST(request: NextRequest) {
 
     // Check if topic exists in registry
     try {
-      const existingTopic = await topicRegistry.findTopicByPath(topic_path);
+      const existingTopic = await _get_topicRegistry().findTopicByPath(topic_path);
       topicExists = !!existingTopic;
 
       // If topic exists and payload is provided, validate payload against schema
       if (existingTopic && payload) {
         try {
-          const isValid = await topicRegistry.validateTopicPayload(topic_path, payload);
+          const isValid = await _get_topicRegistry().validateTopicPayload(topic_path, payload);
           schemaValid = isValid;
           validationDetails.payload_schema = 'valid';
           
           // Additional data range validation for numeric values
           if (existingTopic.data_type === 'number' && typeof payload.value === 'number') {
             try {
-              topicValidator.validateDataRange(
+              _get_topicValidator().validateDataRange(
                 payload.value,
                 existingTopic.min_value || undefined,
                 existingTopic.max_value || undefined

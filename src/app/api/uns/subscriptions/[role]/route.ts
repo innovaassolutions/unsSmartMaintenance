@@ -9,8 +9,12 @@ import { UNSHierarchy } from '@/lib/database/uns-hierarchy';
 
 export const dynamic = 'force-dynamic';
 
-const prisma = getPrismaClient();
-const unsHierarchy = new UNSHierarchy();
+// Lazy init for Vercel build compatibility
+let _prisma: any = null;
+function _get_prisma() { if (!_prisma) _prisma = getPrismaClient(); return _prisma; }
+// Lazy init for Vercel build compatibility
+let _unsHierarchy: any = null;
+function _get_unsHierarchy() { if (!_unsHierarchy) _unsHierarchy = new UNSHierarchy(); return _unsHierarchy; }
 
 // Valid user roles
 const VALID_ROLES = ['factory_manager', 'production_manager', 'maintenance_technician', 'executive'] as const;
@@ -33,7 +37,7 @@ export async function GET(
     }
 
     // Get role-specific subscriptions from database
-    const subscriptions = await prisma.topicSubscription.findMany({
+    const subscriptions = await _get_prisma().topicSubscription.findMany({
       where: {
         user_role: role,
         is_active: true,
@@ -53,7 +57,7 @@ export async function GET(
         work_unit: 'cnc-001',
       };
 
-      const defaultPatterns = unsHierarchy.generateAccessPatterns(role, defaultHierarchy);
+      const defaultPatterns = _get_unsHierarchy().generateAccessPatterns(role, defaultHierarchy);
       
       const defaultSubscriptions = defaultPatterns.map(pattern => ({
         topic_pattern: pattern,

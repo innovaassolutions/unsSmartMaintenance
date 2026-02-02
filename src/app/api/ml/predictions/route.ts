@@ -41,13 +41,19 @@ interface MLPredictionResponse {
   };
 }
 
-const bigQuery = new BigQuery({
+// Lazy init for Vercel build compatibility
+let _bigQuery: any = null;
+function _get_bigQuery() { if (!_bigQuery) _bigQuery = new BigQuery({
   projectId: process.env.GOOGLE_CLOUD_PROJECT,
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-});
+}); return _bigQuery; }
 
-const vertexClient = new VertexAIClient();
-const featureEngineer = new FeatureEngineer();
+// Lazy init for Vercel build compatibility
+let _vertexClient: any = null;
+function _get_vertexClient() { if (!_vertexClient) _vertexClient = new VertexAIClient(); return _vertexClient; }
+// Lazy init for Vercel build compatibility
+let _featureEngineer: any = null;
+function _get_featureEngineer() { if (!_featureEngineer) _featureEngineer = new FeatureEngineer(); return _featureEngineer; }
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -136,10 +142,10 @@ async function getPredictionForMachine(
   }
 
   // 3. Generate ML features
-  const features = await featureEngineer.generateFeatures(machineId, sensorData);
+  const features = await _get_featureEngineer().generateFeatures(machineId, sensorData);
   
   // 4. Get ML predictions from Vertex AI
-  const predictions = await vertexClient.getPredictions({
+  const predictions = await _get_vertexClient().getPredictions({
     machineId,
     sensorData,
     predictionType: 'failure' // Will handle multiple types internally
@@ -215,7 +221,7 @@ async function fetchSensorData(machineId: string, timeHorizonHours: number) {
     LIMIT 10000
   `;
 
-  const [rows] = await bigQuery.query(query);
+  const [rows] = await _get_bigQuery().query(query);
   
   return rows.map(row => ({
     timestamp: new Date(row.timestamp),
@@ -233,7 +239,7 @@ async function getActiveMachines(): Promise<string[]> {
     ORDER BY machine_id
   `;
 
-  const [rows] = await bigQuery.query(query);
+  const [rows] = await _get_bigQuery().query(query);
   return rows.map(row => row.machine_id);
 }
 

@@ -32,10 +32,12 @@ interface PredictionAPIResponse {
 }
 
 // Initialize prediction client
-const predictionClient = new ContactWelderPredictionClient({
+// Lazy init for Vercel build compatibility
+let _predictionClient: any = null;
+function _get_predictionClient() { if (!_predictionClient) _predictionClient = new ContactWelderPredictionClient({
   projectId: process.env.GOOGLE_CLOUD_PROJECT,
   region: 'us-central1'
-});
+}); return _predictionClient; }
 
 export async function POST(request: NextRequest): Promise<NextResponse<PredictionAPIResponse>> {
   const startTime = Date.now();
@@ -86,7 +88,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Predictio
     }
 
     // Generate prediction
-    const prediction = await predictionClient.predictFailure({
+    const prediction = await _get_predictionClient().predictFailure({
       machineId: body.machineId,
       sensorData,
       predictionHorizonDays: body.predictionHorizonDays || 21

@@ -9,7 +9,9 @@ import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
-const topicRegistry = new TopicRegistry();
+// Lazy init for Vercel build compatibility
+let _topicRegistry: any = null;
+function _get_topicRegistry() { if (!_topicRegistry) _topicRegistry = new TopicRegistry(); return _topicRegistry; }
 
 // Validation schema for topic updates
 const updateTopicSchema = z.object({
@@ -43,7 +45,7 @@ export async function PUT(
     const validatedData = updateTopicSchema.parse(body);
 
     // Check if topic exists
-    const existingTopic = await topicRegistry.findTopicByPath(validatedData.topic_path || '');
+    const existingTopic = await _get_topicRegistry().findTopicByPath(validatedData.topic_path || '');
     if (!existingTopic && !validatedData.topic_path) {
       return NextResponse.json(
         { error: 'Topic not found' },
@@ -53,7 +55,7 @@ export async function PUT(
 
     // For schema updates
     if (validatedData.schema_definition) {
-      const updatedTopic = await topicRegistry.updateTopicSchema(id, validatedData.schema_definition);
+      const updatedTopic = await _get_topicRegistry().updateTopicSchema(id, validatedData.schema_definition);
       
       return NextResponse.json({
         id: updatedTopic.id,
@@ -111,7 +113,7 @@ export async function DELETE(
     const { id } = await context.params;
 
     // Deactivate the topic (soft delete)
-    const deactivatedTopic = await topicRegistry.deactivateTopic(id);
+    const deactivatedTopic = await _get_topicRegistry().deactivateTopic(id);
 
     return NextResponse.json({
       id: deactivatedTopic.id,

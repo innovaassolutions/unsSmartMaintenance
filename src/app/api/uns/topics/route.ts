@@ -9,7 +9,9 @@ import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
-const topicRegistry = new AutoProvisioningTopicRegistry();
+// Lazy init for Vercel build compatibility
+let _topicRegistry: any = null;
+function _get_topicRegistry() { if (!_topicRegistry) _topicRegistry = new AutoProvisioningTopicRegistry(); return _topicRegistry; }
 
 // Validation schema for topic creation
 const createTopicSchema = z.object({
@@ -58,7 +60,7 @@ export async function GET(request: NextRequest) {
     };
 
     // Get topics from database
-    const topics = await topicRegistry.searchTopics(searchOptions);
+    const topics = await _get_topicRegistry().searchTopics(searchOptions);
 
     // Calculate pagination
     const startIndex = (page - 1) * limit;
@@ -114,7 +116,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createTopicSchema.parse(body);
 
     // Register the topic
-    const newTopic = await topicRegistry.registerTopic(validatedData);
+    const newTopic = await _get_topicRegistry().registerTopic(validatedData);
 
     return NextResponse.json({
       id: newTopic.id,

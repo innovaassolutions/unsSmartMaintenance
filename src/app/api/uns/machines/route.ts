@@ -9,7 +9,9 @@ import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
-const prisma = getPrismaClient();
+// Lazy init for Vercel build compatibility
+let _prisma: any = null;
+function _get_prisma() { if (!_prisma) _prisma = getPrismaClient(); return _prisma; }
 
 // GET /api/uns/machines
 export async function GET(request: NextRequest) {
@@ -32,7 +34,7 @@ export async function GET(request: NextRequest) {
     if (status) where.operational_status = status;
 
     // Get machines from database
-    const machines = await prisma.cNCMachine.findMany({
+    const machines = await _get_prisma().cNCMachine.findMany({
       where,
       orderBy: {
         machine_id: 'asc',
@@ -96,7 +98,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createMachineSchema.parse(body);
 
     // Check if machine ID already exists
-    const existingMachine = await prisma.cNCMachine.findUnique({
+    const existingMachine = await _get_prisma().cNCMachine.findUnique({
       where: { machine_id: validatedData.machine_id },
     });
 
@@ -108,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the machine
-    const newMachine = await prisma.cNCMachine.create({
+    const newMachine = await _get_prisma().cNCMachine.create({
       data: {
         machine_id: validatedData.machine_id,
         display_name: validatedData.display_name,
