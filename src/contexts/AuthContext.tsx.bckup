@@ -1,0 +1,59 @@
+"use client"
+// src/contexts/AuthContext.tsx
+import React, { createContext, useContext, ReactNode, useState } from 'react';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Hardcoded demo user
+const DEMO_USER: User = {
+  id: '1',
+  email: 'demo@example.com',
+  name: 'Demo User'
+};
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(DEMO_USER); // Start logged in
+  // Or start logged out: const [user, setUser] = useState<User | null>(null);
+
+  const login = () => {
+    setUser(DEMO_USER);
+  };
+
+  const logout = () => {
+    setUser(null);
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    login,
+    logout,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
