@@ -16,6 +16,7 @@ describe('TailwindCSS Configuration', () => {
   test('should import tailwindcss in globals.css', () => {
     const globalsPath = path.join(process.cwd(), 'src/app/globals.css');
     const content = fs.readFileSync(globalsPath, 'utf-8');
+    // eslint-disable-next-line quotes
     expect(content).toContain("@import 'tailwindcss'");
   });
 
