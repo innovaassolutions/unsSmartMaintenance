@@ -35,6 +35,14 @@ export const metadata: Metadata = {
     description:
       'Prevent equipment failures before they happen. Real-time IoT monitoring, AI-driven predictive analytics, and role-based dashboards for smarter manufacturing maintenance.',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   robots: {
     index: true,
     follow: true,
