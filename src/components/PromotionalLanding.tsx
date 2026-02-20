@@ -515,7 +515,7 @@ export default function PromotionalLanding() {
             <span className="text-sm text-gray-500">by Innovaas</span>
           </div>
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} Innovaas Sdn Bhd. All rights reserved.
+            © 2025 Innovaas Sdn Bhd. All rights reserved.
           </p>
         </div>
       </footer>

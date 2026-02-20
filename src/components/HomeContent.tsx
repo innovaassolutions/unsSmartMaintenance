@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Factory, TrendingUp, Wrench, Activity, Zap } from 'lucide-react';
 import { useAuth } from '@/contexts/NoAuthContext';
+import PromotionalLanding from '@/components/PromotionalLanding';
 
 interface SystemStatus {
   pipeline: {
@@ -19,7 +20,7 @@ interface SystemStatus {
   };
 }
 
-function AuthGatedHomeInner() {
+function HomeContentInner() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const showLanding = !user || searchParams.get('landing') === 'true';
@@ -67,9 +68,9 @@ function AuthGatedHomeInner() {
     return () => clearInterval(interval);
   }, [showLanding]);
 
-  // If showing landing, return null — the SSR'd PromotionalLanding is already visible
+  // Before mount or when showing landing, render the promotional page
   if (!mounted || showLanding) {
-    return null;
+    return <PromotionalLanding />;
   }
 
   const dashboardRoles = [
@@ -285,10 +286,10 @@ function AuthGatedHomeInner() {
   );
 }
 
-export default function AuthGatedHome() {
+export default function HomeContent() {
   return (
-    <Suspense fallback={null}>
-      <AuthGatedHomeInner />
+    <Suspense fallback={<PromotionalLanding />}>
+      <HomeContentInner />
     </Suspense>
   );
 }
