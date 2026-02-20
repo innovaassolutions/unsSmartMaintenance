@@ -82,30 +82,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <Script
-        id="reb2b-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html:
-            '!function(key) {if (window.reb2b) return;window.reb2b = {loaded: true};var s = document.createElement("script");s.async = true;s.src = "https://ddwl4m2hdecbv.cloudfront.net/b/" + key + "/" + key + ".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s, document.getElementsByTagName("script")[0]);}("GNLKQH7W8R6Q");',
-        }}
-      />
-      <Script
-        src="https://analytics.innovaas.co/script.js"
-        data-website-id="d9d3bbb4-8829-493c-b799-36117cfc7959"
-        strategy="afterInteractive"
-      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NoAuthProvider>{children}</NoAuthProvider>
+        <Script
+          id="reb2b-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html:
+              '!function(key) {if (window.reb2b) return;window.reb2b = {loaded: true};var s = document.createElement("script");s.async = true;s.src = "https://ddwl4m2hdecbv.cloudfront.net/b/" + key + "/" + key + ".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s, document.getElementsByTagName("script")[0]);}("GNLKQH7W8R6Q");',
+          }}
+        />
+        <Script
+          src="https://analytics.innovaas.co/script.js"
+          data-website-id="d9d3bbb4-8829-493c-b799-36117cfc7959"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
