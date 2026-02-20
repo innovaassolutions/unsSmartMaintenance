@@ -1,7 +1,5 @@
-import HomeContent from '@/components/HomeContent';
-
-export const dynamic = 'force-dynamic';
+import PromotionalLanding from '@/components/PromotionalLanding';
 
 export default function Home() {
-  return <HomeContent />;
+  return <PromotionalLanding />;
 }
